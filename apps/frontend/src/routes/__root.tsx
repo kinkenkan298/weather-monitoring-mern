@@ -1,6 +1,6 @@
+import { TanStackDevtools } from "@tanstack/react-devtools";
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { TanStackDevtools } from "@tanstack/react-devtools";
 
 import Header from "../components/Header";
 
@@ -33,13 +33,13 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
-      <body className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-body min-h-screen flex flex-col">
+      <body className="bg-background-dark font-body flex flex-col">
         <Header />
-        <main className="flex-1 flex flex-col items-center w-full px-4 py-8 md:px-10 lg:px-40">
+        <main className="flex-1 flex flex-col items-center w-full px-4 py-8 ">
           {children}
         </main>
         <TanStackDevtools

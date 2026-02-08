@@ -12,7 +12,7 @@ export default function WeatherStats({
   pressure,
 }: WeatherStatsProps) {
   return (
-    <div className="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-gray-100 dark:border-card-border">
+    <div className="grid grid-cols-3 gap-4 pt-6">
       <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 dark:bg-white/5">
         <DropletsIcon className="text-blue-400 mb-1" />
         <span className="text-xs text-slate-500 dark:text-muted uppercase tracking-wider font-semibold">

@@ -1,5 +1,4 @@
 import CurrentWeather from "@/components/weather/CurrentWeather";
-import Footer from "@/components/weather/Footer";
 import ForecastSummary, {
   ForecastDay,
 } from "@/components/weather/ForecastSummary";
@@ -80,7 +79,7 @@ const mockRecentLocations: Location[] = [
 
 function HomePage() {
   return (
-    <div className="max-w-5xl w-full flex flex-col gap-8">
+    <div className="max-w-7xl w-full  flex flex-col gap-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <CurrentWeather
           city="San Francisco"
@@ -89,18 +88,17 @@ function HomePage() {
           condition="Partly Cloudy"
           temperature={64}
           feelsLike={62}
-          weatherIcon="partly_cloudy_day"
+          weatherIcon={CloudSunIcon}
           humidity={45}
           windSpeed={12}
           pressure={1015}
+          isFavorite={true}
         />
 
         <ForecastSummary forecasts={mockForecastData} />
       </div>
 
       <RecentLocations locations={mockRecentLocations} />
-
-      <Footer />
     </div>
   );
 }

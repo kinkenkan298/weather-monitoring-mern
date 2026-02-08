@@ -1,14 +1,17 @@
-import { CloudSunIcon, LocateFixedIcon } from "lucide-react";
+import { LocateFixedIcon, LucideIcon } from "lucide-react";
+import { Badge } from "../selia/badge";
+import { Card, CardBody } from "../selia/card";
+import { Separator } from "../selia/separator";
 import WeatherStats from "./WeatherStats";
 
-interface CurrentWeatherProps {
+export interface CurrentWeatherProps {
   city: string;
   region: string;
   dateTime: string;
   condition: string;
   temperature: number;
   feelsLike: number;
-  weatherIcon: string;
+  weatherIcon: LucideIcon;
   humidity: number;
   windSpeed: number;
   pressure: number;
@@ -23,13 +26,16 @@ export default function CurrentWeather({
   condition,
   temperature,
   feelsLike,
-  weatherIcon,
+  weatherIcon: Icon,
   humidity,
   windSpeed,
   pressure,
   isFavorite = false,
   onFavoriteToggle,
 }: CurrentWeatherProps) {
+  const iconColor = isFavorite
+    ? "text-yellow-400"
+    : "text-slate-300 dark:text-gray-600 hover:text-yellow-400 dark:hover:text-yellow-400";
   return (
     <div className="lg:col-span-2 flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -37,27 +43,25 @@ export default function CurrentWeather({
           <LocateFixedIcon />
           Current Weather
         </h2>
-        <span className="text-sm text-slate-500 dark:text-muted bg-slate-100 dark:bg-accent px-3 py-1 rounded-full">
+
+        <Badge variant="secondary" className="py-1 px-3 text-slate-500">
           Updated 5m ago
-        </span>
+        </Badge>
       </div>
-      <div className="bg-white dark:bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-card-border relative overflow-hidden group">
-        <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none group-hover:bg-primary/20 transition-all duration-700" />
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center relative z-10 gap-6">
+
+      <Card className="bg-white dark:bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-card-border relative overflow-hidden group">
+        <CardBody className="flex flex-col md:flex-row  justify-between items-start md:items-center relative z-10 gap-6">
           <div>
             <div className="flex items-center gap-3 mb-1">
               <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                 {city}, {region}
               </h3>
               <button
-                className={`transition-colors cursor-pointer ${isFavorite
-                    ? "text-yellow-400"
-                    : "text-slate-300 dark:text-gray-600 hover:text-yellow-400 dark:hover:text-yellow-400"
-                  }`}
+                className={`transition-colors cursor-pointer ${iconColor}`}
                 title="Add to Favorites"
                 onClick={onFavoriteToggle}
               >
-                <CloudSunIcon className="text-yellow-400" />
+                <Icon className={iconColor} size={20} />
               </button>
             </div>
             <p className="text-slate-500 dark:text-muted text-sm font-medium mb-6">
@@ -78,19 +82,19 @@ export default function CurrentWeather({
             </div>
           </div>
           <div className="flex flex-col items-center">
-            <CloudSunIcon className="text-yellow-400 " size={80} />
+            <Icon className={iconColor} size={80} />
             <span className="text-lg font-bold text-slate-900 dark:text-white mt-2">
               {condition}
             </span>
           </div>
-        </div>
-
+        </CardBody>
+        <Separator />
         <WeatherStats
           humidity={humidity}
           windSpeed={windSpeed}
           pressure={pressure}
         />
-      </div>
+      </Card>
     </div>
   );
 }
