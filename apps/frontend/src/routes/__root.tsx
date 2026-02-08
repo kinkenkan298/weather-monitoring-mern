@@ -37,9 +37,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-body min-h-screen flex flex-col">
         <Header />
-        <div className="root">{children}</div>
+        <main className="flex-1 flex flex-col items-center w-full px-4 py-8 md:px-10 lg:px-40">
+          {children}
+        </main>
         <TanStackDevtools
           config={{
             position: "bottom-right",
