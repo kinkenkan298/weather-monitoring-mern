@@ -1,6 +1,6 @@
+import { SearchInputCity } from "@/components/input-search-city";
 import { Button } from "@/components/selia/button";
 import { Heading } from "@/components/selia/heading";
-import { Input } from "@/components/selia/input";
 import { InputGroup, InputGroupAddon } from "@/components/selia/input-group";
 import { Text } from "@/components/selia/text";
 import CurrentWeather from "@/components/weather/CurrentWeather";
@@ -10,10 +10,30 @@ import ForecastSummary, {
 import RecentLocations, {
   Location,
 } from "@/components/weather/RecentLocations";
+import { CityApiResponse } from "@/types/api-response";
 import { createFileRoute } from "@tanstack/react-router";
 import { Cloud, CloudRainIcon, CloudSunIcon, SearchIcon } from "lucide-react";
+import { Activity, useEffect, useState } from "react";
 
-export const Route = createFileRoute("/")({ component: HomePage });
+export const Route = createFileRoute("/")({
+  component: HomePage,
+  loader: async () => {
+    const response = await fetch("http://localhost:3001/v1/cities");
+    const { data, message } = (await response.json()) as CityApiResponse;
+    if (!response.ok) {
+      throw new Error(message);
+    }
+    const cities = data.map((city) => {
+      return {
+        value: city.name,
+        label: city.name,
+      };
+    });
+    return {
+      cities,
+    };
+  },
+});
 
 const mockForecastData: ForecastDay[] = [
   {
@@ -83,6 +103,32 @@ const mockRecentLocations: Location[] = [
 ];
 
 function HomePage() {
+  const { cities } = Route.useLoaderData();
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (
+      "geolocation" in navigator &&
+      navigator.geolocation.getCurrentPosition
+    ) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      });
+    }
+  }, []);
+
+  // const { data } = useQuery({
+  //   queryKey: ["weather", location],
+  //   queryFn: () => fetchWeather(location),
+  //   enabled: !!location,
+  // });
+
   return (
     <div className="max-w-7xl w-full  flex flex-col gap-8">
       <div className="relative w-full rounded-2xl overflow-hidden bg-linear-to-br from-blue-600 to-indigo-900 shadow-xl">
@@ -111,7 +157,7 @@ function HomePage() {
               <InputGroupAddon align="start">
                 <SearchIcon />
               </InputGroupAddon>
-              <Input placeholder="Search location" variant="subtle" />
+              <SearchInputCity cities={cities} />
               <InputGroupAddon align="end">
                 <Button size="lg" variant="primary">
                   <SearchIcon />
@@ -122,24 +168,25 @@ function HomePage() {
           </div>
         </div>
       </div>
+      <Activity mode={location ? "visible" : "hidden"}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <CurrentWeather
+            city="San Francisco"
+            region="CA"
+            dateTime="Tuesday, 10:42 AM"
+            condition="Partly Cloudy"
+            temperature={64}
+            feelsLike={62}
+            weatherIcon={CloudSunIcon}
+            humidity={45}
+            windSpeed={12}
+            pressure={1015}
+            isFavorite={true}
+          />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <CurrentWeather
-          city="San Francisco"
-          region="CA"
-          dateTime="Tuesday, 10:42 AM"
-          condition="Partly Cloudy"
-          temperature={64}
-          feelsLike={62}
-          weatherIcon={CloudSunIcon}
-          humidity={45}
-          windSpeed={12}
-          pressure={1015}
-          isFavorite={true}
-        />
-
-        <ForecastSummary forecasts={mockForecastData} />
-      </div>
+          <ForecastSummary forecasts={mockForecastData} />
+        </div>
+      </Activity>
 
       <RecentLocations locations={mockRecentLocations} />
     </div>

@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import { errorHandler } from "./middleware/error-handler";
 import { cityRouter } from "./routes/city.routes";
+import { weatherRouter } from "./routes/weather.routes";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(
 );
 
 app.use("/v1/cities", cityRouter);
+app.use("/v1/weather", weatherRouter);
 
 app.use(errorHandler);
 

@@ -1,17 +1,18 @@
 meta {
-  name: get all city
+  name: get weather
   type: http
-  seq: 1
+  seq: 2
 }
 
 get {
-  url: {{base_url}}/cities?search=ma
+  url: {{base_url}}/weather?latitude=12&longitude=123
   body: none
   auth: inherit
 }
 
 params:query {
-  search: ma
+  latitude: 12
+  longitude: 123
 }
 
 settings {

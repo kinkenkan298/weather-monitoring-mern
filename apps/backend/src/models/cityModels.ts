@@ -24,4 +24,4 @@ const CitySchema = new Schema<ICityDocument>(
   },
 );
 
-export const City = model<ICity>("cities", CitySchema);
+export const cityModel = model<ICity>("cities", CitySchema);

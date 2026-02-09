@@ -9,6 +9,8 @@ export const errorHandler = (
   next: NextFunction,
 ) => {
   if (err instanceof HttpException) {
+    console.error(err.message);
+
     errorResponse({
       res,
       message: err.message,
@@ -18,6 +20,7 @@ export const errorHandler = (
     });
     return;
   }
+  console.error(err.message);
   errorResponse({
     res,
     message: "Internal Server Error",
