@@ -1,3 +1,8 @@
+import { Button } from "@/components/selia/button";
+import { Heading } from "@/components/selia/heading";
+import { Input } from "@/components/selia/input";
+import { InputGroup, InputGroupAddon } from "@/components/selia/input-group";
+import { Text } from "@/components/selia/text";
 import CurrentWeather from "@/components/weather/CurrentWeather";
 import ForecastSummary, {
   ForecastDay,
@@ -6,7 +11,7 @@ import RecentLocations, {
   Location,
 } from "@/components/weather/RecentLocations";
 import { createFileRoute } from "@tanstack/react-router";
-import { Cloud, CloudRainIcon, CloudSunIcon } from "lucide-react";
+import { Cloud, CloudRainIcon, CloudSunIcon, SearchIcon } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: HomePage });
 
@@ -80,6 +85,41 @@ const mockRecentLocations: Location[] = [
 function HomePage() {
   return (
     <div className="max-w-7xl w-full  flex flex-col gap-8">
+      <div className="relative w-full rounded-2xl overflow-hidden bg-linear-to-br from-blue-600 to-indigo-900 shadow-xl">
+        <div
+          className="absolute inset-0 opacity-30 bg-cover bg-center"
+          data-alt="Abstract cloudy sky background"
+          style={{
+            backgroundImage:
+              'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBRigwEQYSMjNOSHIHvWLgyPKlY5PH524aNTWK53VgNvs9PP-TVsEhQbQPUpt4_o2nJwa77SWlbJjRxrF7bw7cBaiYtqeioquScdGyUTV1SvGu3AK5zgBoHpJ1n7Zh0RyThn6n_vbxjH9m7Ruel7z5SWCLInNXRRrncfhbXV7xEGP3raMN_-nUwc3VTxk9opkKFQaLc9yn3HHGtDd6_YHXCeGmi7MQ3UPbFF9rSLDKyaETyyURVHH7zFJeWSJYCSRz7oLxedWVQhTA")',
+          }}
+        ></div>
+        <div className="relative z-10 flex flex-col items-center justify-center py-12 px-6 gap-6 text-center h-70 rounded-xl">
+          <div className="flex flex-col gap-2">
+            <Heading
+              size="lg"
+              className="text-white text-3xl md:text-5xl font-black leading-tight tracking-tight"
+            >
+              Global Weather Monitoring
+            </Heading>
+            <Text className="text-blue-100 text-sm md:text-base font-medium max-w-xl">
+              Get real-time weather updates for any location
+            </Text>
+          </div>
+          <div className="w-full max-w-xl relative group">
+            <InputGroup>
+              <InputGroupAddon align="start">
+                <SearchIcon />
+              </InputGroupAddon>
+              <Input placeholder="Search location" variant="subtle" />
+              <InputGroupAddon align="end">
+                <Button>Add Location</Button>
+              </InputGroupAddon>
+            </InputGroup>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <CurrentWeather
           city="San Francisco"

@@ -14,7 +14,7 @@ export default function WeatherStats({
   return (
     <div className="grid grid-cols-3 gap-4 pt-6">
       <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 dark:bg-white/5">
-        <DropletsIcon className="text-blue-400 mb-1" />
+        <DropletsIcon className="text-blue-500 mb-1" />
         <span className="text-xs text-slate-500 dark:text-muted uppercase tracking-wider font-semibold">
           Humidity
         </span>

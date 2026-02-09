@@ -40,7 +40,7 @@ export default function CurrentWeather({
     <div className="lg:col-span-2 flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <LocateFixedIcon />
+          <LocateFixedIcon className="text-blue-500" />
           Current Weather
         </h2>
 

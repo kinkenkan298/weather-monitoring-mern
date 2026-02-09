@@ -1,4 +1,5 @@
 import { LucideIcon, PlusCircleIcon } from "lucide-react";
+import { Heading } from "../selia/heading";
 import RecentLocationCard from "./RecentLocationCard";
 
 export interface Location {
@@ -22,9 +23,12 @@ export default function RecentLocations({
 }: RecentLocationsProps) {
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+      <Heading
+        level={2}
+        className="text-xl font-bold text-slate-900 dark:text-white"
+      >
         Recent Locations
-      </h2>
+      </Heading>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {locations.map((location, index) => (
           <RecentLocationCard
