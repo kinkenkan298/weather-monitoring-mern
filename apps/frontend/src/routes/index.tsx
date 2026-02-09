@@ -113,7 +113,10 @@ function HomePage() {
               </InputGroupAddon>
               <Input placeholder="Search location" variant="subtle" />
               <InputGroupAddon align="end">
-                <Button>Add Location</Button>
+                <Button size="lg" variant="primary">
+                  <SearchIcon />
+                  Search
+                </Button>
               </InputGroupAddon>
             </InputGroup>
           </div>

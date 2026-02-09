@@ -3,6 +3,12 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "dev": "pnpm run --parallel --filter \"./apps/**\" dev",
+    "build": "pnpm run --recursive --filter \"./apps/**\" build",
+    "test": "pnpm run --recursive --filter \"./apps/**\" test",
+    "lint": "pnpm run --recursive --filter \"./apps/**\" lint"
+  },
   "devDependencies": {},
   "peerDependencies": {
     "typescript": "^5"
