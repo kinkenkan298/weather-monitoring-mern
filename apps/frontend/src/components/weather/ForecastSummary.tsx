@@ -7,7 +7,12 @@ export interface ForecastDay {
   highTemp: number;
   lowTemp: number;
   icon: LucideIcon;
-  iconColor: "orange" | "blue" | "gray" | "yellow";
+  variant?:
+  | "primary-subtle"
+  | "warning-subtle"
+  | "danger-subtle"
+  | "tertiary-subtle"
+  | "orange-subtle";
 }
 
 interface ForecastSummaryProps {
@@ -32,7 +37,7 @@ export default function ForecastSummary({
           View Full
         </button>
       </div>
-      <div className="bg-white dark:bg-card rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-card-border flex flex-col gap-1 h-full justify-between">
+      <div className="bg-white dark:bg-card rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-card-border flex flex-col gap-3 h-full justify-between">
         {forecasts.map((forecast, index) => (
           <ForecastItem
             key={index}
@@ -41,7 +46,7 @@ export default function ForecastSummary({
             highTemp={forecast.highTemp}
             lowTemp={forecast.lowTemp}
             icon={forecast.icon}
-            iconColor={forecast.iconColor}
+            variant={forecast.variant}
           />
         ))}
       </div>

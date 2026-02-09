@@ -17,7 +17,7 @@ const mockForecastData: ForecastDay[] = [
     highTemp: 74,
     lowTemp: 58,
     icon: CloudSunIcon,
-    iconColor: "orange" as const,
+    variant: "warning-subtle",
   },
   {
     day: "Thu",
@@ -25,7 +25,7 @@ const mockForecastData: ForecastDay[] = [
     highTemp: 68,
     lowTemp: 55,
     icon: CloudRainIcon,
-    iconColor: "blue" as const,
+    variant: "primary-subtle",
   },
   {
     day: "Fri",
@@ -33,7 +33,7 @@ const mockForecastData: ForecastDay[] = [
     highTemp: 70,
     lowTemp: 60,
     icon: Cloud,
-    iconColor: "gray" as const,
+    variant: "tertiary-subtle",
   },
   {
     day: "Sat",
@@ -41,7 +41,7 @@ const mockForecastData: ForecastDay[] = [
     highTemp: 72,
     lowTemp: 62,
     icon: CloudSunIcon,
-    iconColor: "yellow" as const,
+    variant: "orange-subtle",
   },
   {
     day: "Sun",
@@ -49,7 +49,7 @@ const mockForecastData: ForecastDay[] = [
     highTemp: 75,
     lowTemp: 64,
     icon: CloudSunIcon,
-    iconColor: "orange" as const,
+    variant: "warning-subtle",
   },
 ];
 
