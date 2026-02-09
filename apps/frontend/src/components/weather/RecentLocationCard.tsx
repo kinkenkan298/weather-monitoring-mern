@@ -1,4 +1,12 @@
 import { LucideIcon } from "lucide-react";
+import { IconBox } from "../selia/icon-box";
+import {
+  Item,
+  ItemAction,
+  ItemContent,
+  ItemDescription,
+  ItemTitle,
+} from "../selia/item";
 
 interface RecentLocationCardProps {
   city: string;
@@ -18,22 +26,24 @@ export default function RecentLocationCard({
   onClick,
 }: RecentLocationCardProps) {
   return (
-    <div
-      className="bg-white dark:bg-card rounded-xl p-4 border border-gray-100 dark:border-card-border flex items-center justify-between cursor-pointer hover:border-primary transition-colors group"
-      onClick={onClick}
-    >
-      <div className="flex flex-col">
-        <span className="font-bold text-slate-900 dark:text-white">{city}</span>
-        <span className="text-xs text-slate-500 dark:text-muted">
-          {condition}
-        </span>
-      </div>
-      <div className="flex items-center gap-2">
-        <Icon size={20} className={iconColor} />
-        <span className="text-lg font-bold text-slate-900 dark:text-white">
-          {temperature}°
-        </span>
-      </div>
-    </div>
+    <>
+      <Item
+        className="cursor-pointer hover:border-primary transition-colors group p-4"
+        onClick={onClick}
+      >
+        <ItemContent>
+          <ItemTitle>{city}</ItemTitle>
+          <ItemDescription>{condition}</ItemDescription>
+        </ItemContent>
+        <ItemAction className="flex items-center gap-2">
+          <IconBox variant="tertiary-subtle">
+            <Icon size={20} className={iconColor} />
+          </IconBox>
+          <span className="text-lg font-bold text-slate-900 dark:text-white">
+            {temperature}°
+          </span>
+        </ItemAction>
+      </Item>
+    </>
   );
 }
