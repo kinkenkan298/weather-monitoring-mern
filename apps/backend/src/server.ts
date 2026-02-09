@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import { errorHandler } from "./middleware/error-handler";
+import { cityRouter } from "./routes/city.routes";
 
 const app = express();
 
@@ -13,6 +14,8 @@ app.use(
     credentials: true,
   }),
 );
+
+app.use("/v1/cities", cityRouter);
 
 app.use(errorHandler);
 
