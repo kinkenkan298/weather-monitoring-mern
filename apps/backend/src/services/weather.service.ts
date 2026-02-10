@@ -1,3 +1,5 @@
+import { Weather } from "@/models/weatherModels";
+import { weatherCodeToText } from "@/utils/weather-code";
 import { fetchWeatherApi } from "openmeteo";
 import { CityService } from "./city.service";
 
@@ -75,19 +77,31 @@ async function getWeather({ lat, lng }: { lat: string; lng: string }) {
     windDirection: current.variables(10)!.value(),
   };
 
-  // cities
   const city = await CityService.getCity({
     lat,
     lng,
     timezone: timezone || "",
   });
 
+  try {
+    await Weather.create({
+      cityId: city?._id as unknown as string,
+      temperature: weatherData.temperature,
+      humidity: weatherData.humidity,
+      windSpeed: weatherData.windSpeed,
+      weatherDescription: weatherCodeToText(weatherData.weatherCode),
+      timestamp: weatherData.time,
+    });
+  } catch (error) {
+    console.error("Failed to save weather data:", error);
+  }
+
   const location = {
     latitude,
     longitude,
     elevation,
-    city: city.name,
-    country: city.country,
+    city: city?.name ?? "Unknown",
+    country: city?.country ?? "Unknown",
     timezone,
     timezoneAbbreviation,
     utcOffsetSeconds,

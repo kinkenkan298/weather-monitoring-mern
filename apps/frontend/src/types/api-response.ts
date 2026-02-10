@@ -22,6 +22,8 @@ export interface WeatherLocation {
   latitude: number;
   longitude: number;
   elevation: number;
+  city: string;
+  country: string;
   timezone: string;
   timezoneAbbreviation: string | null;
   utcOffsetSeconds: number;

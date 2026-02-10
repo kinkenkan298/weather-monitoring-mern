@@ -183,8 +183,8 @@ function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {currentData && (
             <CurrentWeather
-              city={weather?.data.weather.location.timezone ?? "My Location"}
-              region={weather?.data.weather.location.timezone ?? "Indonesia"}
+              city={weather?.data.weather.location.city ?? "My Location"}
+              region={weather?.data.weather.location.country ?? "Indonesia"}
               dateTime={new Date(currentData.time).toLocaleString("en-US", {
                 weekday: "long",
                 hour: "numeric",

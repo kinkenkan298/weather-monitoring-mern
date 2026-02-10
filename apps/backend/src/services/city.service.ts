@@ -21,16 +21,26 @@ class CityService {
     lat: string;
     lng: string;
     timezone: string;
-  }): Promise<ICityDocument> {
+  }): Promise<ICityDocument | null> {
     if (!lat || !lng) {
       throw new Error("Latitude and longitude are required");
     }
-    const city = await cityModel.findOne({
-      latitude: Number(lat),
-      longitude: Number(lng),
-    });
-    if (city) {
-      return city;
+    const cities = await cityModel.find();
+    let nearestCityId = "";
+    let minDistance = Infinity;
+
+    for (const city of cities) {
+      const dist = Math.sqrt(
+        Math.pow(city.latitude - Number(lat), 2) +
+        Math.pow(city.longitude - Number(lng), 2),
+      );
+      if (dist < minDistance) {
+        minDistance = dist;
+        nearestCityId = city._id as unknown as string;
+      }
+    }
+    if (nearestCityId && minDistance < 0.5) {
+      return await cityModel.findById(nearestCityId);
     }
 
     const response = await fetch(
@@ -43,6 +53,7 @@ class CityService {
       throw new Error("Failed to fetch city data");
     }
     const data = (await response.json()) as GeoCityResponse;
+
     return await cityModel.create({
       name: data.address.city,
       latitude: Number(data.lat),
