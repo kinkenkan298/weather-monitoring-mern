@@ -9,10 +9,10 @@ const weatherRouter = Router();
 weatherRouter.get(
   "/",
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const { latitude, longitude } = req.query;
+    const { lat, lon } = req.query;
     const weather = await weatherService.getWeather(
-      latitude as string,
-      longitude as string,
+      lat as string,
+      lon as string,
     );
     successResponse({
       res,

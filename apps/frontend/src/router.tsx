@@ -1,13 +1,11 @@
 import { createRouter } from "@tanstack/react-router";
 import { routerWithQueryClient } from "@tanstack/react-router-with-query";
 
-// Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 import { QueryClient } from "@tanstack/react-query";
 import { NotFound } from "./components/not-found";
 import { DefaultCatchBoundry } from "./components/default-catch-boundry";
 
-// Create a new router instance
 export const getRouter = () => {
   const queryClient = new QueryClient({
     defaultOptions: {

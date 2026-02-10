@@ -8,13 +8,13 @@ export interface ICity {
   longitude: number;
   timezone: string;
 }
-interface ICityDocument extends ICity, Document { }
+export interface ICityDocument extends ICity, Document { }
 
 const CitySchema = new Schema<ICityDocument>(
   {
     name: { type: String, required: true },
     country: { type: String, required: true },
-    population: { type: Number, required: true },
+    population: { type: Number, required: false },
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
     timezone: { type: String, required: true },

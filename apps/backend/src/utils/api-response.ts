@@ -48,4 +48,52 @@ const errorResponse = <T>({
   } as APIResponse<T>);
 };
 
+export interface GeoCityResponse {
+  place_id: number;
+  licence: string;
+  osm_type: string;
+  osm_id: number;
+  lat: string;
+  lon: string;
+  class: string;
+  type: string;
+  place_rank: number;
+  importance: number;
+  addresstype: string;
+  name: string;
+  display_name: string;
+  address: Address;
+  extratags: Extratags;
+  namedetails: Namedetails;
+  boundingbox: string[];
+}
+
+export interface Namedetails {
+  name: string;
+}
+
+export interface Extratags {
+  lanes: string;
+  width: string;
+  oneway: string;
+  surface: string;
+  motorcycle: string;
+  smoothness: string;
+}
+
+export interface Address {
+  road: string;
+  neighbourhood: string;
+  village: string;
+  city_district: string;
+  city: string;
+  state: string;
+  "ISO3166-2-lvl4": string;
+  region: string;
+  "ISO3166-2-lvl3": string;
+  postcode: string;
+  country: string;
+  country_code: string;
+}
+
 export { errorResponse, successResponse };

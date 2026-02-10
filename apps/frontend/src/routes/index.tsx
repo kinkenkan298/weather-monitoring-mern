@@ -1,7 +1,11 @@
-import { SearchInputCity } from "@/components/input-search-city";
-import { Button } from "@/components/selia/button";
 import { Heading } from "@/components/selia/heading";
-import { InputGroup, InputGroupAddon } from "@/components/selia/input-group";
+import {
+  Select,
+  SelectItem,
+  SelectPopup,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/selia/select";
 import { Text } from "@/components/selia/text";
 import CurrentWeather from "@/components/weather/CurrentWeather";
 import ForecastSummary, {
@@ -10,9 +14,11 @@ import ForecastSummary, {
 import RecentLocations, {
   Location,
 } from "@/components/weather/RecentLocations";
-import { CityApiResponse } from "@/types/api-response";
+import { CityApiResponse, WeatherApiResponse } from "@/types/api-response";
+import { getWeatherCondition } from "@/utils/weather-code";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Cloud, CloudRainIcon, CloudSunIcon, SearchIcon } from "lucide-react";
+import { Cloud, CloudRainIcon, CloudSunIcon } from "lucide-react";
 import { Activity, useEffect, useState } from "react";
 
 export const Route = createFileRoute("/")({
@@ -34,49 +40,6 @@ export const Route = createFileRoute("/")({
     };
   },
 });
-
-const mockForecastData: ForecastDay[] = [
-  {
-    day: "Wed",
-    condition: "Sunny",
-    highTemp: 74,
-    lowTemp: 58,
-    icon: CloudSunIcon,
-    variant: "warning-subtle",
-  },
-  {
-    day: "Thu",
-    condition: "Showers",
-    highTemp: 68,
-    lowTemp: 55,
-    icon: CloudRainIcon,
-    variant: "primary-subtle",
-  },
-  {
-    day: "Fri",
-    condition: "Cloudy",
-    highTemp: 70,
-    lowTemp: 60,
-    icon: Cloud,
-    variant: "tertiary-subtle",
-  },
-  {
-    day: "Sat",
-    condition: "Partial",
-    highTemp: 72,
-    lowTemp: 62,
-    icon: CloudSunIcon,
-    variant: "orange-subtle",
-  },
-  {
-    day: "Sun",
-    condition: "Sunny",
-    highTemp: 75,
-    lowTemp: 64,
-    icon: CloudSunIcon,
-    variant: "warning-subtle",
-  },
-];
 
 const mockRecentLocations: Location[] = [
   {
@@ -123,11 +86,59 @@ function HomePage() {
     }
   }, []);
 
-  // const { data } = useQuery({
-  //   queryKey: ["weather", location],
-  //   queryFn: () => fetchWeather(location),
-  //   enabled: !!location,
-  // });
+  const fetchWeather = async (location: {
+    latitude: number;
+    longitude: number;
+  }): Promise<WeatherApiResponse> => {
+    const response = await fetch(
+      `http://localhost:3001/v1/weather?lat=${location.latitude}&lon=${location.longitude}`,
+      {
+        method: "GET",
+      },
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch weather data");
+    }
+    const data = await response.json();
+    return data;
+  };
+
+  const { data: weather } = useQuery({
+    queryKey: ["weather", location],
+    queryFn: () => {
+      if (!location) return;
+      return fetchWeather(location);
+    },
+    enabled: !!location,
+  });
+
+  const currentData = weather?.data.weather.current;
+  const dailyData = weather?.data.weather.daily;
+
+  const currentCondition = currentData
+    ? getWeatherCondition(currentData.weatherCode)
+    : { condition: "Unknown", icon: Cloud };
+
+  const forecastData: ForecastDay[] = dailyData
+    ? dailyData.time.map((time, index) => {
+      const date = new Date(time);
+      const day = date.toLocaleDateString("en-US", { weekday: "short" });
+      const code = dailyData.weatherCode[index];
+      const { condition, icon, variant } = getWeatherCondition(code);
+      return {
+        day,
+        condition,
+        highTemp: dailyData.temperatureMax
+          ? Math.round(dailyData.temperatureMax[index])
+          : 0,
+        lowTemp: dailyData.temperatureMin
+          ? Math.round(dailyData.temperatureMin[index])
+          : 0,
+        icon,
+        variant,
+      };
+    })
+    : [];
 
   return (
     <div className="max-w-7xl w-full  flex flex-col gap-8">
@@ -153,38 +164,44 @@ function HomePage() {
             </Text>
           </div>
           <div className="w-full max-w-xl relative group">
-            <InputGroup>
-              <InputGroupAddon align="start">
-                <SearchIcon />
-              </InputGroupAddon>
-              <SearchInputCity cities={cities} />
-              <InputGroupAddon align="end">
-                <Button size="lg" variant="primary">
-                  <SearchIcon />
-                  Search
-                </Button>
-              </InputGroupAddon>
-            </InputGroup>
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a city" />
+              </SelectTrigger>
+              <SelectPopup>
+                {cities.map((city) => (
+                  <SelectItem key={city.value} value={city.value}>
+                    {city.label}
+                  </SelectItem>
+                ))}
+              </SelectPopup>
+            </Select>
           </div>
         </div>
       </div>
       <Activity mode={location ? "visible" : "hidden"}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <CurrentWeather
-            city="San Francisco"
-            region="CA"
-            dateTime="Tuesday, 10:42 AM"
-            condition="Partly Cloudy"
-            temperature={64}
-            feelsLike={62}
-            weatherIcon={CloudSunIcon}
-            humidity={45}
-            windSpeed={12}
-            pressure={1015}
-            isFavorite={true}
-          />
+          {currentData && (
+            <CurrentWeather
+              city={weather?.data.weather.location.timezone ?? "My Location"}
+              region={weather?.data.weather.location.timezone ?? "Indonesia"}
+              dateTime={new Date(currentData.time).toLocaleString("en-US", {
+                weekday: "long",
+                hour: "numeric",
+                minute: "numeric",
+              })}
+              condition={currentCondition.condition}
+              temperature={Math.round(currentData.temperature)}
+              feelsLike={Math.round(currentData.apparentTemperature)}
+              weatherIcon={currentCondition.icon}
+              humidity={currentData.humidity}
+              windSpeed={currentData.windSpeed}
+              pressure={1013}
+              isFavorite={true}
+            />
+          )}
 
-          <ForecastSummary forecasts={mockForecastData} />
+          <ForecastSummary forecasts={forecastData} />
         </div>
       </Activity>
 

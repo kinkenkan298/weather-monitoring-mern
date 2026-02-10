@@ -4,6 +4,25 @@ import { asyncHandler } from "../middleware/async-handler";
 import { CityService } from "../services/city.service";
 import { successResponse } from "../utils/api-response";
 
+// type City = {
+//   id: number;
+//   name: string;
+//   latitude: number;
+//   longitude: number;
+//   elevation: number;
+//   feature_code: string;
+//   timezone: string;
+//   country: string;
+//   admin1?: string;
+//   admin2?: string;
+//   admin3?: string;
+//   admin4?: string;
+//   admin1_id?: number;
+//   admin2_id?: number;
+//   admin3_id?: number;
+//   admin4_id?: number;
+// };
+
 const cityRouter = Router();
 
 cityRouter.get(

@@ -1,0 +1,22 @@
+meta {
+  name: test
+  type: http
+  seq: 4
+}
+
+get {
+  url: https://geocode.maps.co/reverse?lat=-7.3367699671781565&lon=112.7756976060043&api_key=698b6edd8a3e4925527618cince5994
+  body: none
+  auth: inherit
+}
+
+params:query {
+  lat: -7.3367699671781565
+  lon: 112.7756976060043
+  api_key: 698b6edd8a3e4925527618cince5994
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

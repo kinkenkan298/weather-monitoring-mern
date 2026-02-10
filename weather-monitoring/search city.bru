@@ -1,0 +1,20 @@
+meta {
+  name: search city
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/cities?search=surabaya
+  body: none
+  auth: inherit
+}
+
+params:query {
+  search: surabaya
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
