@@ -1,6 +1,7 @@
-import "dotenv/config";
 import mongoose from "mongoose";
 import { cityModel } from "../models/cityModels";
+import "dotenv/config";
+import { connectDB } from "@/db";
 
 const cities = [
   {
@@ -151,17 +152,8 @@ const cities = [
 
 const seed = async () => {
   try {
-    await mongoose.connect(process.env.DATABASE_URI!);
-    console.log("Connected to MongoDB");
-
-    const count = await cityModel.countDocuments();
-    if (count === 0) {
-      console.log("Seeding cities...");
-      await cityModel.insertMany(cities);
-      console.log("Cities seeded successfully");
-    } else {
-      console.log(`Database already has ${count} cities. Skipping seed.`);
-    }
+    await connectDB();
+    await cityModel.insertMany(cities);
   } catch (error) {
     console.error("Error seeding database:", error);
   } finally {

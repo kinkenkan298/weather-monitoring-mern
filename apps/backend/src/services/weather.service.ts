@@ -122,14 +122,17 @@ async function getWeather({ lat, lng }: { lat: string; lng: string }) {
   );
 
   try {
-    await new Weather({
-      cityId: newCity?._id,
-      temperature: weatherData.temperature,
-      humidity: weatherData.humidity,
-      windSpeed: weatherData.windSpeed,
-      weatherDescription: weatherCodeToText(weatherData.weatherCode),
-      timestamp: weatherData.time,
-    }).save();
+    const weather_data = await Weather.findOne({ cityId: newCity?._id });
+    if (!weather_data) {
+      await new Weather({
+        cityId: newCity?._id,
+        temperature: weatherData.temperature,
+        humidity: weatherData.humidity,
+        windSpeed: weatherData.windSpeed,
+        weatherDescription: weatherCodeToText(weatherData.weatherCode),
+        timestamp: weatherData.time,
+      }).save();
+    }
   } catch (error) {
     console.error("Failed to save weather data:", error);
   }
