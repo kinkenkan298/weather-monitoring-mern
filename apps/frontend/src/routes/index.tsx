@@ -1,11 +1,4 @@
 import { Heading } from "@/components/selia/heading";
-import {
-  Select,
-  SelectItem,
-  SelectPopup,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/selia/select";
 import { Text } from "@/components/selia/text";
 import CurrentWeather from "@/components/weather/CurrentWeather";
 import ForecastSummary, {
@@ -71,6 +64,7 @@ function HomePage() {
     latitude: number;
     longitude: number;
   } | null>(null);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
 
   useEffect(() => {
     if (
@@ -163,22 +157,9 @@ function HomePage() {
               Get real-time weather updates for any location
             </Text>
           </div>
-          <div className="w-full max-w-xl relative group">
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a city" />
-              </SelectTrigger>
-              <SelectPopup>
-                {cities.map((city) => (
-                  <SelectItem key={city.value} value={city.value}>
-                    {city.label}
-                  </SelectItem>
-                ))}
-              </SelectPopup>
-            </Select>
-          </div>
         </div>
       </div>
+
       <Activity mode={location ? "visible" : "hidden"}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {currentData && (

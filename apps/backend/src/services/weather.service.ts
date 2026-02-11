@@ -1,11 +1,31 @@
-import { Weather } from "@/models/weatherModels";
+import { cityModel } from "@/models/cityModels";
+import { type IWeather, Weather } from "@/models/weatherModels";
 import { weatherCodeToText } from "@/utils/weather-code";
+import type { QueryFilter } from "mongoose";
 import { fetchWeatherApi } from "openmeteo";
 import { CityService } from "./city.service";
-
 export class weatherService {
   static async getWeather(lat: string, lng: string) {
     const { weather } = await getWeather({ lat, lng });
+    return {
+      weather,
+    };
+  }
+
+  static async getWeatherHistory(city?: string) {
+    let filter: QueryFilter<IWeather> = {};
+    if (city) {
+      const cityData = await cityModel.findOne({ name: city });
+      if (!cityData) {
+        throw new Error("City not found");
+      }
+      filter = { cityId: cityData._id };
+    }
+
+    const weather = await Weather.find(filter)
+      .populate("cityId", "name country timezone")
+      .sort({ createdAt: -1 })
+      .limit(50);
     return {
       weather,
     };
@@ -92,14 +112,14 @@ async function getWeather({ lat, lng }: { lat: string; lng: string }) {
   });
 
   try {
-    await Weather.create({
-      cityId: city?._id as unknown as string,
+    await new Weather({
+      cityId: city?._id,
       temperature: weatherData.temperature,
       humidity: weatherData.humidity,
       windSpeed: weatherData.windSpeed,
       weatherDescription: weatherCodeToText(weatherData.weatherCode),
       timestamp: weatherData.time,
-    });
+    }).save();
   } catch (error) {
     console.error("Failed to save weather data:", error);
   }

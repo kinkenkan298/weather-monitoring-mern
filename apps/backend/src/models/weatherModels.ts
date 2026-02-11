@@ -1,7 +1,7 @@
-import { Document, model, Schema } from "mongoose";
+import { Document, model, Schema, type ObjectId } from "mongoose";
 
-interface IWeather extends Document {
-  cityId: string;
+export interface IWeather extends Document {
+  cityId: ObjectId;
   temperature: number;
   humidity: number;
   windSpeed: number;
@@ -11,7 +11,12 @@ interface IWeather extends Document {
 
 const WeatherSchema = new Schema<IWeather>(
   {
-    cityId: { type: String, required: true },
+    cityId: {
+      type: Schema.Types.ObjectId,
+
+      ref: "cities",
+      required: true,
+    },
     temperature: { type: Number, required: true },
     humidity: { type: Number, required: true },
     windSpeed: { type: Number, required: true },

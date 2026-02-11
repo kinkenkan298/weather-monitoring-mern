@@ -22,4 +22,17 @@ weatherRouter.get(
   }),
 );
 
+weatherRouter.get(
+  "/history",
+  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { city } = req.query;
+    const weather = await weatherService.getWeatherHistory(city as string);
+    successResponse({
+      res,
+      data: weather,
+      statusCode: 200,
+    });
+  }),
+);
+
 export { weatherRouter };
