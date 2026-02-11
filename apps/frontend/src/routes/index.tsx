@@ -1,4 +1,18 @@
+import {
+  Card,
+  CardBody,
+  CardDescription,
+  CardTitle,
+} from "@/components/selia/card";
 import { Heading } from "@/components/selia/heading";
+import {
+  Select,
+  SelectItem,
+  SelectList,
+  SelectPopup,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/selia/select";
 import { Text } from "@/components/selia/text";
 import CurrentWeather from "@/components/weather/CurrentWeather";
 import ForecastSummary, {
@@ -115,28 +129,28 @@ function HomePage() {
 
   const forecastData: ForecastDay[] = dailyData
     ? dailyData.time.map((time, index) => {
-      const date = new Date(time);
-      const day = date.toLocaleDateString("en-US", { weekday: "short" });
-      const code = dailyData.weatherCode[index];
-      const { condition, icon, variant } = getWeatherCondition(code);
-      return {
-        day,
-        condition,
-        highTemp: dailyData.temperatureMax
-          ? Math.round(dailyData.temperatureMax[index])
-          : 0,
-        lowTemp: dailyData.temperatureMin
-          ? Math.round(dailyData.temperatureMin[index])
-          : 0,
-        icon,
-        variant,
-      };
-    })
+        const date = new Date(time);
+        const day = date.toLocaleDateString("en-US", { weekday: "short" });
+        const code = dailyData.weatherCode[index];
+        const { condition, icon, variant } = getWeatherCondition(code);
+        return {
+          day,
+          condition,
+          highTemp: dailyData.temperatureMax
+            ? Math.round(dailyData.temperatureMax[index])
+            : 0,
+          lowTemp: dailyData.temperatureMin
+            ? Math.round(dailyData.temperatureMin[index])
+            : 0,
+          icon,
+          variant,
+        };
+      })
     : [];
 
   return (
-    <div className="max-w-7xl w-full  flex flex-col gap-8">
-      <div className="relative w-full rounded-2xl overflow-hidden bg-linear-to-br from-blue-600 to-indigo-900 shadow-xl">
+    <div className="max-w-7xl w-full flex flex-col gap-8">
+      <div className="relative w-full rounded-2xl bg-linear-to-r from-blue-500 to-indigo-900 overflow-hidden shadow-xl">
         <div
           className="absolute inset-0 opacity-30 bg-cover bg-center"
           data-alt="Abstract cloudy sky background"
@@ -144,8 +158,8 @@ function HomePage() {
             backgroundImage:
               'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBRigwEQYSMjNOSHIHvWLgyPKlY5PH524aNTWK53VgNvs9PP-TVsEhQbQPUpt4_o2nJwa77SWlbJjRxrF7bw7cBaiYtqeioquScdGyUTV1SvGu3AK5zgBoHpJ1n7Zh0RyThn6n_vbxjH9m7Ruel7z5SWCLInNXRRrncfhbXV7xEGP3raMN_-nUwc3VTxk9opkKFQaLc9yn3HHGtDd6_YHXCeGmi7MQ3UPbFF9rSLDKyaETyyURVHH7zFJeWSJYCSRz7oLxedWVQhTA")',
           }}
-        ></div>
-        <div className="relative z-10 flex flex-col items-center justify-center py-12 px-6 gap-6 text-center h-70 rounded-xl">
+        />
+        <div className="relative flex flex-col items-center justify-center py-12 px-6 gap-6 text-center h-70 rounded-xl">
           <div className="flex flex-col gap-2">
             <Heading
               size="lg"
@@ -156,6 +170,22 @@ function HomePage() {
             <Text className="text-blue-100 text-sm md:text-base font-medium max-w-xl">
               Get real-time weather updates for any location
             </Text>
+          </div>
+          <div className="w-full max-w-xl relative group">
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a city" />
+              </SelectTrigger>
+              <SelectPopup>
+                <SelectList>
+                  {cities.map((city) => (
+                    <SelectItem key={city.value} value={city.value}>
+                      {city.label}
+                    </SelectItem>
+                  ))}
+                </SelectList>
+              </SelectPopup>
+            </Select>
           </div>
         </div>
       </div>

@@ -84,7 +84,7 @@ export default function CurrentWeather({
       </div>
 
       <Card className="bg-white dark:bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-card-border relative overflow-hidden group">
-        <CardBody className="flex flex-col md:flex-row  justify-between items-start md:items-center relative z-10 gap-6">
+        <CardBody className="flex flex-col md:flex-row  justify-between items-start md:items-center relative  gap-6">
           <div>
             <div className="flex items-center gap-3 mb-1">
               <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
