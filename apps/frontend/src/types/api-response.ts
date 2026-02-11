@@ -60,5 +60,16 @@ export interface WeatherData {
   current: CurrentWeather;
   daily: DailyWeather;
 }
+export interface HistoryWeather {
+  cityId: City;
+  temperature: number;
+  humidity: number;
+  windSpeed: number;
+  weatherCode: number;
+  weatherDescription: string;
+  timestamp: Date;
+}
+
+export type WeatherHistory = ApiResponse<HistoryWeather[]>;
 
 export type WeatherApiResponse = ApiResponse<{ weather: WeatherData }>;

@@ -1,28 +1,13 @@
-import { PlusCircleIcon } from "lucide-react";
 import { Heading } from "../selia/heading";
 import RecentLocationCard from "./RecentLocationCard";
-import { City } from "@/types/api-response";
+import { HistoryWeather } from "@/types/api-response";
 import { getWeatherCondition } from "@/utils/weather-code";
 
-export interface Location {
-  cityId: City;
-  temperature: number;
-  humidity: number;
-  windSpeed: number;
-  weatherCode: number;
-  weatherDescription: string;
-  timestamp: Date;
-}
-
 interface RecentLocationsProps {
-  locations: Location[];
-  onAddLocation?: () => void;
+  locations: HistoryWeather[];
 }
 
-export default function RecentLocations({
-  locations,
-  onAddLocation,
-}: RecentLocationsProps) {
+export default function RecentLocations({ locations }: RecentLocationsProps) {
   return (
     <div className="flex flex-col gap-4">
       <Heading

@@ -7,20 +7,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/selia/select";
+import { Spinner } from "@/components/selia/spinner";
 import { Text } from "@/components/selia/text";
 import CurrentWeather from "@/components/weather/CurrentWeather";
 import ForecastSummary, {
   ForecastDay,
 } from "@/components/weather/ForecastSummary";
-import RecentLocations, {
-  Location,
-} from "@/components/weather/RecentLocations";
+import RecentLocations from "@/components/weather/RecentLocations";
 import { fetchCityData, fetchWeather } from "@/lib/api";
-import { ApiResponse, City, CityApiResponse } from "@/types/api-response";
+import {
+  ApiResponse,
+  CityApiResponse,
+  HistoryWeather,
+} from "@/types/api-response";
 import { getWeatherCondition } from "@/utils/weather-code";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Cloud, CloudRainIcon, CloudSunIcon } from "lucide-react";
+import { Cloud } from "lucide-react";
 import { Activity, useEffect, useState } from "react";
 
 export const Route = createFileRoute("/")({
@@ -42,30 +45,6 @@ export const Route = createFileRoute("/")({
     };
   },
 });
-
-const mockRecentLocations: Location[] = [
-  {
-    city: "New York",
-    condition: "Clear Sky",
-    temperature: 68,
-    icon: CloudSunIcon,
-    iconColor: "text-yellow-500",
-  },
-  {
-    city: "Tokyo",
-    condition: "Rainy",
-    temperature: 62,
-    icon: CloudRainIcon,
-    iconColor: "text-blue-400",
-  },
-  {
-    city: "Paris",
-    condition: "Cloudy",
-    temperature: 59,
-    icon: Cloud,
-    iconColor: "text-gray-400",
-  },
-];
 
 function HomePage() {
   const { cities } = Route.useLoaderData();
@@ -98,7 +77,7 @@ function HomePage() {
     enabled: !!selectedCity,
   });
 
-  const { data: weather } = useQuery({
+  const { data: weather, isLoading } = useQuery({
     queryKey: ["weather", location],
     queryFn: () => {
       if (!location) return;
@@ -146,7 +125,10 @@ function HomePage() {
     queryKey: ["history"],
     queryFn: async () => {
       const response = await fetch("http://localhost:3001/v1/weather/history");
-      const data = (await response.json()) as ApiResponse<City[]>;
+      const data = (await response.json()) as ApiResponse<{
+        weather: HistoryWeather[];
+        count: number;
+      }>;
       return data;
     },
   });
@@ -222,7 +204,9 @@ function HomePage() {
         </div>
       </Activity>
 
-      <RecentLocations locations={historyWeather?.data.weather ?? []} />
+      {historyWeather && (
+        <RecentLocations locations={historyWeather.data.weather ?? []} />
+      )}
     </div>
   );
 }
