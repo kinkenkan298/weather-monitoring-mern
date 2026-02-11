@@ -28,6 +28,7 @@ export class weatherService {
       .limit(50);
     return {
       weather,
+      count: weather.length,
     };
   }
 }
