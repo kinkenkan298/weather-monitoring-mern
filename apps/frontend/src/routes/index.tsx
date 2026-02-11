@@ -183,8 +183,8 @@ function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {currentData && (
             <CurrentWeather
-              city={weather?.data.weather.location.city ?? "My Location"}
-              region={weather?.data.weather.location.country ?? "Indonesia"}
+              city={weather?.data.weather.location.city ?? "Unknown"}
+              region={weather?.data.weather.location.country ?? "Unknown"}
               dateTime={new Date(currentData.time).toLocaleString("en-US", {
                 weekday: "long",
                 hour: "numeric",
@@ -196,7 +196,7 @@ function HomePage() {
               weatherIcon={currentCondition.icon}
               humidity={currentData.humidity}
               windSpeed={currentData.windSpeed}
-              pressure={1013}
+              pressure={currentData.precipitation}
               isFavorite={true}
             />
           )}
