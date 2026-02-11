@@ -4,12 +4,17 @@ import { weatherCodeToText } from "@/utils/weather-code";
 import type { QueryFilter } from "mongoose";
 import { fetchWeatherApi } from "openmeteo";
 import { CityService } from "./city.service";
-export class weatherService {
+export class WeatherService {
   static async getWeather(lat: string, lng: string) {
-    const { weather } = await getWeather({ lat, lng });
-    return {
-      weather,
-    };
+    try {
+      const { weather } = await getWeather({ lat, lng });
+      return {
+        weather,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to fetch weather data");
+    }
   }
 
   static async getWeatherHistory(city?: string) {
@@ -34,6 +39,11 @@ export class weatherService {
 }
 
 async function getWeather({ lat, lng }: { lat: string; lng: string }) {
+  const oldCity = await CityService.getCity({
+    lat,
+    lng,
+  });
+
   const params = {
     latitude: lat,
     longitude: lng,
@@ -106,15 +116,14 @@ async function getWeather({ lat, lng }: { lat: string; lng: string }) {
     windGusts: current.variables(14)!.value(),
   };
 
-  const city = await CityService.getCity({
-    lat,
-    lng,
-    timezone: timezone || "",
-  });
+  const newCity = await cityModel.findOneAndUpdate(
+    { _id: oldCity?._id },
+    { $set: { name: oldCity?.name, timezone } },
+  );
 
   try {
     await new Weather({
-      cityId: city?._id,
+      cityId: newCity?._id,
       temperature: weatherData.temperature,
       humidity: weatherData.humidity,
       windSpeed: weatherData.windSpeed,
@@ -129,8 +138,8 @@ async function getWeather({ lat, lng }: { lat: string; lng: string }) {
     latitude,
     longitude,
     elevation,
-    city: city?.name ?? "Unknown",
-    country: city?.country ?? "Unknown",
+    city: newCity?.name ?? "Unknown",
+    country: newCity?.country ?? "Unknown",
     timezone,
     timezoneAbbreviation,
     utcOffsetSeconds,

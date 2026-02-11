@@ -20,7 +20,7 @@ class CityService {
   }: {
     lat: string;
     lng: string;
-    timezone: string;
+    timezone?: string;
   }): Promise<ICityDocument | null> {
     if (!lat || !lng) {
       throw new Error("Latitude and longitude are required");
@@ -32,7 +32,7 @@ class CityService {
     for (const city of cities) {
       const dist = Math.sqrt(
         Math.pow(city.latitude - Number(lat), 2) +
-        Math.pow(city.longitude - Number(lng), 2),
+          Math.pow(city.longitude - Number(lng), 2),
       );
       if (dist < minDistance) {
         minDistance = dist;
@@ -59,7 +59,7 @@ class CityService {
       latitude: Number(data.lat),
       longitude: Number(data.lon),
       country: data.address.country,
-      timezone,
+      timezone: timezone ?? "",
     });
   }
 }
