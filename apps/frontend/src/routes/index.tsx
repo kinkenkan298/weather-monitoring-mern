@@ -1,9 +1,3 @@
-import {
-  Card,
-  CardBody,
-  CardDescription,
-  CardTitle,
-} from "@/components/selia/card";
 import { Heading } from "@/components/selia/heading";
 import {
   Select,
@@ -21,7 +15,12 @@ import ForecastSummary, {
 import RecentLocations, {
   Location,
 } from "@/components/weather/RecentLocations";
-import { CityApiResponse, WeatherApiResponse } from "@/types/api-response";
+import {
+  ApiResponse,
+  City,
+  CityApiResponse,
+  WeatherApiResponse,
+} from "@/types/api-response";
 import { getWeatherCondition } from "@/utils/weather-code";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -111,14 +110,36 @@ function HomePage() {
     return data;
   };
 
+  const { data: searchCityData } = useQuery({
+    queryKey: ["search-city", selectedCity],
+    queryFn: async () => {
+      if (!selectedCity) return;
+      const searchCity = await fetch(
+        `http://localhost:3001/v1/cities?search=${selectedCity}`,
+      );
+      const searchCityData = (await searchCity.json()) as ApiResponse<City[]>;
+      return searchCityData;
+    },
+    enabled: !!selectedCity,
+  });
+
   const { data: weather } = useQuery({
     queryKey: ["weather", location],
     queryFn: () => {
       if (!location) return;
+
       return fetchWeather(location);
     },
     enabled: !!location,
   });
+
+  useEffect(() => {
+    if (!selectedCity || !searchCityData) return;
+    setLocation({
+      latitude: searchCityData.data[0].latitude,
+      longitude: searchCityData.data[0].longitude,
+    });
+  }, [selectedCity, searchCityData]);
 
   const currentData = weather?.data.weather.current;
   const dailyData = weather?.data.weather.daily;
@@ -129,23 +150,23 @@ function HomePage() {
 
   const forecastData: ForecastDay[] = dailyData
     ? dailyData.time.map((time, index) => {
-        const date = new Date(time);
-        const day = date.toLocaleDateString("en-US", { weekday: "short" });
-        const code = dailyData.weatherCode[index];
-        const { condition, icon, variant } = getWeatherCondition(code);
-        return {
-          day,
-          condition,
-          highTemp: dailyData.temperatureMax
-            ? Math.round(dailyData.temperatureMax[index])
-            : 0,
-          lowTemp: dailyData.temperatureMin
-            ? Math.round(dailyData.temperatureMin[index])
-            : 0,
-          icon,
-          variant,
-        };
-      })
+      const date = new Date(time);
+      const day = date.toLocaleDateString("en-US", { weekday: "short" });
+      const code = dailyData.weatherCode[index];
+      const { condition, icon, variant } = getWeatherCondition(code);
+      return {
+        day,
+        condition,
+        highTemp: dailyData.temperatureMax
+          ? Math.round(dailyData.temperatureMax[index])
+          : 0,
+        lowTemp: dailyData.temperatureMin
+          ? Math.round(dailyData.temperatureMin[index])
+          : 0,
+        icon,
+        variant,
+      };
+    })
     : [];
 
   return (
@@ -172,7 +193,10 @@ function HomePage() {
             </Text>
           </div>
           <div className="w-full max-w-xl relative group">
-            <Select>
+            <Select
+              name="city"
+              onValueChange={(val) => setSelectedCity(val.value)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select a city" />
               </SelectTrigger>
