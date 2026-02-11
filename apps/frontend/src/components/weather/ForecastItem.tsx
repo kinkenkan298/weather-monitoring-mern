@@ -8,6 +8,7 @@ import {
   ItemMedia,
   ItemTitle,
 } from "../selia/item";
+import { IconVariant } from "@/types/icon-variant";
 
 interface ForecastItemProps {
   day: string;
@@ -15,12 +16,7 @@ interface ForecastItemProps {
   highTemp: number;
   lowTemp: number;
   icon: LucideIcon;
-  variant?:
-  | "primary-subtle"
-  | "warning-subtle"
-  | "danger-subtle"
-  | "tertiary-subtle"
-  | "orange-subtle";
+  variant?: IconVariant;
 }
 
 export default function ForecastItem({

@@ -7,14 +7,14 @@ import {
   ItemDescription,
   ItemTitle,
 } from "../selia/item";
+import { IconVariant } from "@/types/icon-variant";
 
 interface RecentLocationCardProps {
   city: string;
   condition: string;
   temperature: number;
   icon: LucideIcon;
-  iconColor: string;
-  onClick?: () => void;
+  variant?: IconVariant;
 }
 
 export default function RecentLocationCard({
@@ -22,22 +22,18 @@ export default function RecentLocationCard({
   condition,
   temperature,
   icon: Icon,
-  iconColor,
-  onClick,
+  variant,
 }: RecentLocationCardProps) {
   return (
     <>
-      <Item
-        className="cursor-pointer hover:border-primary transition-colors group p-4"
-        onClick={onClick}
-      >
+      <Item className="cursor-pointer hover:border-primary transition-colors group p-4">
         <ItemContent>
           <ItemTitle>{city}</ItemTitle>
           <ItemDescription>{condition}</ItemDescription>
         </ItemContent>
         <ItemAction className="flex items-center gap-2">
-          <IconBox variant="tertiary-subtle">
-            <Icon size={20} className={iconColor} />
+          <IconBox variant={variant}>
+            <Icon size={20} />
           </IconBox>
           <span className="text-lg font-bold text-slate-900 dark:text-white">
             {temperature}°

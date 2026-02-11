@@ -129,6 +129,7 @@ async function getWeather({ lat, lng }: { lat: string; lng: string }) {
         temperature: weatherData.temperature,
         humidity: weatherData.humidity,
         windSpeed: weatherData.windSpeed,
+        weatherCode: weatherData.weatherCode,
         weatherDescription: weatherCodeToText(weatherData.weatherCode),
         timestamp: weatherData.time,
       }).save();

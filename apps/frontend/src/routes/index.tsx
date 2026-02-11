@@ -16,7 +16,7 @@ import RecentLocations, {
   Location,
 } from "@/components/weather/RecentLocations";
 import { fetchCityData, fetchWeather } from "@/lib/api";
-import { CityApiResponse } from "@/types/api-response";
+import { ApiResponse, City, CityApiResponse } from "@/types/api-response";
 import { getWeatherCondition } from "@/utils/weather-code";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -142,7 +142,14 @@ function HomePage() {
         };
       })
     : [];
-
+  const { data: historyWeather } = useQuery({
+    queryKey: ["history"],
+    queryFn: async () => {
+      const response = await fetch("http://localhost:3001/v1/weather/history");
+      const data = (await response.json()) as ApiResponse<City[]>;
+      return data;
+    },
+  });
   return (
     <div className="max-w-7xl w-full flex flex-col gap-8">
       <div className="relative w-full rounded-2xl bg-linear-to-r from-blue-500 to-indigo-900 overflow-hidden shadow-xl">
@@ -215,7 +222,7 @@ function HomePage() {
         </div>
       </Activity>
 
-      <RecentLocations locations={mockRecentLocations} />
+      <RecentLocations locations={historyWeather?.data.weather ?? []} />
     </div>
   );
 }
