@@ -42,6 +42,10 @@ export interface CurrentWeather {
   weatherCode: number;
   windSpeed: number;
   windDirection: number;
+  pressure: number;
+  surfacePressure: number;
+  cloudCover: number;
+  windGusts: number;
 }
 
 export interface DailyWeather {

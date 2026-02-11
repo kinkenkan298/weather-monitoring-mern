@@ -185,7 +185,7 @@ function HomePage() {
             <CurrentWeather
               city={weather?.data.weather.location.city ?? "Unknown"}
               region={weather?.data.weather.location.country ?? "Unknown"}
-              dateTime={new Date(currentData.time).toLocaleString("en-US", {
+              dateTime={new Date(currentData.time).toLocaleString("id-ID", {
                 weekday: "long",
                 hour: "numeric",
                 minute: "numeric",
@@ -196,8 +196,9 @@ function HomePage() {
               weatherIcon={currentCondition.icon}
               humidity={currentData.humidity}
               windSpeed={currentData.windSpeed}
-              pressure={currentData.precipitation}
+              pressure={Math.round(currentData.pressure)}
               isFavorite={true}
+              updateAt={new Date(currentData.time)}
             />
           )}
 

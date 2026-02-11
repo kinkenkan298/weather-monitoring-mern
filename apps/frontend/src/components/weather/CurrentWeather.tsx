@@ -1,4 +1,5 @@
 import { LocateFixedIcon, LucideIcon } from "lucide-react";
+import { useEffect } from "react";
 import { Badge } from "../selia/badge";
 import { Card, CardBody } from "../selia/card";
 import { Separator } from "../selia/separator";
@@ -16,7 +17,7 @@ export interface CurrentWeatherProps {
   windSpeed: number;
   pressure: number;
   isFavorite?: boolean;
-  onFavoriteToggle?: () => void;
+  updateAt?: Date;
 }
 
 export default function CurrentWeather({
@@ -31,11 +32,44 @@ export default function CurrentWeather({
   windSpeed,
   pressure,
   isFavorite = false,
-  onFavoriteToggle,
+  updateAt,
 }: CurrentWeatherProps) {
   const iconColor = isFavorite
     ? "text-yellow-400"
     : "text-slate-300 dark:text-gray-600 hover:text-yellow-400 dark:hover:text-yellow-400";
+  const now = new Date();
+  const differenceInMilliseconds = now.getTime() - updateAt!.getTime();
+  let updateAtText = "";
+  if (differenceInMilliseconds < 1) {
+    updateAtText = "Just now";
+  } else if (differenceInMilliseconds < 60) {
+    updateAtText = `${differenceInMilliseconds} seconds ago`;
+  } else if (differenceInMilliseconds < 60 * 60) {
+    updateAtText = `${Math.floor(differenceInMilliseconds / 60)} minutes ago`;
+  } else if (differenceInMilliseconds < 60 * 60 * 24) {
+    updateAtText = `${Math.floor(differenceInMilliseconds / (60 * 60))} hours ago`;
+  } else {
+    updateAtText = `${Math.floor(differenceInMilliseconds / (60 * 60 * 24))} days ago`;
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const differenceInMilliseconds = now.getTime() - updateAt!.getTime();
+      if (differenceInMilliseconds < 1) {
+        updateAtText = "Just now";
+      } else if (differenceInMilliseconds < 60) {
+        updateAtText = `${differenceInMilliseconds} seconds ago`;
+      } else if (differenceInMilliseconds < 60 * 60) {
+        updateAtText = `${Math.floor(differenceInMilliseconds / 60)} minutes ago`;
+      } else if (differenceInMilliseconds < 60 * 60 * 24) {
+        updateAtText = `${Math.floor(differenceInMilliseconds / (60 * 60))} hours ago`;
+      } else {
+        updateAtText = `${Math.floor(differenceInMilliseconds / (60 * 60 * 24))} days ago`;
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [updateAt]);
+
   return (
     <div className="lg:col-span-2 flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -45,7 +79,7 @@ export default function CurrentWeather({
         </h2>
 
         <Badge variant="secondary" className="py-1 px-3 text-slate-500">
-          Updated 5m ago
+          Updated {updateAtText}
         </Badge>
       </div>
 
@@ -59,7 +93,6 @@ export default function CurrentWeather({
               <button
                 className={`transition-colors cursor-pointer ${iconColor}`}
                 title="Add to Favorites"
-                onClick={onFavoriteToggle}
               >
                 <Icon className={iconColor} size={20} />
               </button>

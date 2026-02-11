@@ -79,6 +79,10 @@ async function getWeather({ lat, lng }: { lat: string; lng: string }) {
     weatherCode: current.variables(8)!.value(),
     windSpeed: current.variables(9)!.value(),
     windDirection: current.variables(10)!.value(),
+    pressure: current.variables(11)!.value(),
+    surfacePressure: current.variables(12)!.value(),
+    cloudCover: current.variables(13)!.value(),
+    windGusts: current.variables(14)!.value(),
   };
 
   const city = await CityService.getCity({
@@ -123,7 +127,6 @@ async function getWeather({ lat, lng }: { lat: string; lng: string }) {
       temperatureMax: daily.variables(1)!.valuesArray()!,
       temperatureMin: daily.variables(2)!.valuesArray()!,
     },
-    pressure: current.variables(11)!.value(),
   };
   return { weather };
 }
