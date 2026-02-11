@@ -15,12 +15,8 @@ import ForecastSummary, {
 import RecentLocations, {
   Location,
 } from "@/components/weather/RecentLocations";
-import {
-  ApiResponse,
-  City,
-  CityApiResponse,
-  WeatherApiResponse,
-} from "@/types/api-response";
+import { fetchCityData, fetchWeather } from "@/lib/api";
+import { CityApiResponse } from "@/types/api-response";
 import { getWeatherCondition } from "@/utils/weather-code";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -93,32 +89,11 @@ function HomePage() {
     }
   }, []);
 
-  const fetchWeather = async (location: {
-    latitude: number;
-    longitude: number;
-  }): Promise<WeatherApiResponse> => {
-    const response = await fetch(
-      `http://localhost:3001/v1/weather?lat=${location.latitude}&lon=${location.longitude}`,
-      {
-        method: "GET",
-      },
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch weather data");
-    }
-    const data = await response.json();
-    return data;
-  };
-
   const { data: searchCityData } = useQuery({
     queryKey: ["search-city", selectedCity],
     queryFn: async () => {
       if (!selectedCity) return;
-      const searchCity = await fetch(
-        `http://localhost:3001/v1/cities?search=${selectedCity}`,
-      );
-      const searchCityData = (await searchCity.json()) as ApiResponse<City[]>;
-      return searchCityData;
+      return fetchCityData(selectedCity);
     },
     enabled: !!selectedCity,
   });
@@ -127,7 +102,6 @@ function HomePage() {
     queryKey: ["weather", location],
     queryFn: () => {
       if (!location) return;
-
       return fetchWeather(location);
     },
     enabled: !!location,
@@ -150,23 +124,23 @@ function HomePage() {
 
   const forecastData: ForecastDay[] = dailyData
     ? dailyData.time.map((time, index) => {
-      const date = new Date(time);
-      const day = date.toLocaleDateString("en-US", { weekday: "short" });
-      const code = dailyData.weatherCode[index];
-      const { condition, icon, variant } = getWeatherCondition(code);
-      return {
-        day,
-        condition,
-        highTemp: dailyData.temperatureMax
-          ? Math.round(dailyData.temperatureMax[index])
-          : 0,
-        lowTemp: dailyData.temperatureMin
-          ? Math.round(dailyData.temperatureMin[index])
-          : 0,
-        icon,
-        variant,
-      };
-    })
+        const date = new Date(time);
+        const day = date.toLocaleDateString("en-US", { weekday: "short" });
+        const code = dailyData.weatherCode[index];
+        const { condition, icon, variant } = getWeatherCondition(code);
+        return {
+          day,
+          condition,
+          highTemp: dailyData.temperatureMax
+            ? Math.round(dailyData.temperatureMax[index])
+            : 0,
+          lowTemp: dailyData.temperatureMin
+            ? Math.round(dailyData.temperatureMin[index])
+            : 0,
+          icon,
+          variant,
+        };
+      })
     : [];
 
   return (
